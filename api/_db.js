@@ -1,35 +1,28 @@
 // api/_db.js
 import { sql } from '@vercel/postgres';
 
-/**
- * Shim ENV: map các biến Neon -> tên mà @vercel/postgres mong đợi
- * + Bổ sung ?sslmode=require nếu thiếu
- */
+/** Shim ENV: map biến của Neon -> tên @vercel/postgres cần, + ép sslmode=require */
 (() => {
   const e = process.env;
 
-  // alias cho pooled URL
+  // pooled
   if (!e.POSTGRES_URL) {
     e.POSTGRES_URL =
-      e.POSTGRES_DATABASE_URL ||        // Neon (Integration)
-      e.DATABASE_URL ||                 // fallback chung
+      e.POSTGRES_DATABASE_URL ||      // Neon integration
+      e.DATABASE_URL ||               // fallback chung
       '';
   }
-
-  // alias cho non-pooling (không bắt buộc)
+  // non-pooled (optional)
   if (!e.POSTGRES_URL_NON_POOLING) {
     e.POSTGRES_URL_NON_POOLING =
-      e.POSTGRES_DATABASE_URL_UNPOOLED ||      // Neon unpooled
-      e.POSTGRES_POSTGRES_URL_NON_POOLING ||   // một số preset khác
+      e.POSTGRES_DATABASE_URL_UNPOOLED ||
+      e.POSTGRES_POSTGRES_URL_NON_POOLING ||
       '';
   }
-
-  // đảm bảo SSL
   const ensureSSL = (u) =>
     u && !/sslmode=/i.test(u)
       ? (u.includes('?') ? `${u}&sslmode=require` : `${u}?sslmode=require`)
       : u;
-
   if (e.POSTGRES_URL) e.POSTGRES_URL = ensureSSL(e.POSTGRES_URL);
   if (e.POSTGRES_URL_NON_POOLING) e.POSTGRES_URL_NON_POOLING = ensureSSL(e.POSTGRES_URL_NON_POOLING);
 })();
@@ -51,10 +44,7 @@ export function ok(res, data, code = 200) {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   res.end(JSON.stringify(data));
 }
-
-export function bad(res, message, code = 400) {
-  ok(res, { error: message }, code);
-}
+export function bad(res, message, code = 400) { ok(res, { error: message }, code); }
 
 export function getAdminKey(req) {
   try {
@@ -62,18 +52,12 @@ export function getAdminKey(req) {
     const url = new URL(req.url, 'http://x');
     const fromQuery = url.searchParams.get('adminKey');
     return String(fromHeader || fromQuery || '').trim();
-  } catch {
-    return '';
-  }
+  } catch { return ''; }
 }
-
 export async function readJson(req) {
   return await new Promise((resolve) => {
     let body = '';
     req.on('data', (c) => (body += c));
-    req.on('end', () => {
-      try { resolve(JSON.parse(body || '{}')); }
-      catch { resolve({}); }
-    });
+    req.on('end', () => { try { resolve(JSON.parse(body || '{}')); } catch { resolve({}); } });
   });
 }
