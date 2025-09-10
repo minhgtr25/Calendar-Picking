@@ -1,5 +1,4 @@
 {
-  "public": "public",
   "cleanUrls": true,
   "routes": [
     { "src": "^/admin$", "dest": "/public/admin.html" }
