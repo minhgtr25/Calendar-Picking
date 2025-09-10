@@ -1,6 +1,6 @@
 {
   "cleanUrls": true,
-  "routes": [
-    { "src": "^/admin$", "dest": "/public/admin.html" }
+  "rewrites": [
+    { "source": "/admin", "destination": "/public/admin.html" }
   ]
 }
