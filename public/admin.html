@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin • Lịch rảnh</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="navbar">
+    <div class="container navbar-inner">
+      <div class="brand">Availability App</div>
+      <div class="text-muted small">Admin</div>
+      <div class="nav-actions"></div>
+    </div>
+  </div>
+
+  <main class="container">
+    <div class="card">
+      <div class="card-body">
+        <div class="row" style="align-items:end;">
+          <div class="col-4">
+            <label class="small">Admin Key (mặc định: <code>changeme</code>)</label>
+            <input id="adminKey" type="password" class="input" placeholder="••••••••" />
+          </div>
+          <div class="col-8" style="display:flex; gap:.5rem;">
+            <button id="loginBtn" class="btn primary">Đăng nhập</button>
+            <button id="refresh" class="btn ghost" disabled>Tải danh sách</button>
+            <button id="createNew" class="btn ghost" disabled>Tạo bản ghi mới</button>
+          </div>
+        </div>
+        <div id="status" class="small text-muted" style="margin-top:.5rem;">Chưa đăng nhập.</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:1rem;">
+      <div class="card-body">
+        <div class="h2">Danh sách đăng ký</div>
+        <div id="adminList" style="margin-top:.6rem;"></div>
+      </div>
+    </div>
+
+    <dialog id="editDialog">
+      <form method="dialog" id="editForm" class="card-body">
+        <div class="h2" id="dialogTitle">Sửa lịch</div>
+        <input type="hidden" id="editId" />
+        <div style="display:grid; grid-template-columns: repeat(12,1fr); gap:.8rem; margin-top:.3rem;">
+          <div class="col-6">
+            <label class="small">Họ tên</label>
+            <input id="editName" type="text" class="input" required />
+          </div>
+          <div class="col-6">
+            <label class="small">Ngày</label>
+            <input id="editDate" type="date" class="input" required />
+          </div>
+          <div class="col-12">
+            <div class="small text-muted" style="margin:.3rem 0;">Chọn khung giờ</div>
+            <div id="editSlots" class="slots"></div>
+          </div>
+        </div>
+        <div style="display:flex; gap:.5rem; justify-content:flex-end; margin-top:1rem;">
+          <button value="cancel" class="btn ghost">Huỷ</button>
+          <button id="saveEdit" value="default" class="btn primary">Lưu</button>
+        </div>
+      </form>
+    </dialog>
+  </main>
+
+  <script src="/ui.js"></script>
+  <script src="/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "availability-app-vercel",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev --listen 4000",
+    "start": "vercel dev --listen 4000"
+  },
+  "dependencies": {
+    "@vercel/postgres": "^0.8.0"
+  },
+  "devDependencies": {
+    "vercel": "^34.2.2"
+  }
+}

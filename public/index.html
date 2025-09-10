@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Đăng ký lịch rảnh</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="navbar">
+    <div class="container navbar-inner">
+      <div class="brand">Availability App</div>
+      <div class="nav-actions">
+        <a class="btn ghost small" href="/admin">Trang Admin</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="container">
+    <div class="h1">Đăng ký lịch rảnh</div>
+    <div class="text-muted">Chọn theo tuần với lưới thời gian. Kéo–thả để chọn nhanh, click để bỏ chọn.</div>
+  </header>
+
+  <main class="container">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-4">
+            <label class="small">Họ tên</label>
+            <input id="name" class="input" type="text" placeholder="Nguyễn Văn A" required />
+          </div>
+          <div class="col-4">
+            <label class="small">Chọn ngày bất kỳ trong tuần</label>
+            <input id="weekPicker" class="input" type="date" />
+          </div>
+          <div class="col-4" style="display:flex; gap:.5rem; align-items:end;">
+            <button id="prevWeek" class="btn ghost" style="flex:1">◀ Tuần trước</button>
+            <button id="thisWeek" class="btn ghost" style="flex:1">Tuần này</button>
+            <button id="nextWeek" class="btn ghost" style="flex:1">Tuần sau ▶</button>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-top:.75rem;">
+          <div class="small text-muted">
+            <span style="display:inline-block;width:14px;height:14px;border:1px solid var(--border);background:var(--cell-selected);border-radius:4px;vertical-align:-2px; margin-right:.4rem;"></span>
+            Ô được chọn = bạn rảnh
+          </div>
+          <div class="small text-muted">Mỗi ô = 30 phút · 07:00 → 22:00</div>
+        </div>
+
+        <div class="calendar-wrapper" style="margin-top:.75rem;">
+          <div id="calendar" class="calendar"></div>
+        </div>
+
+        <div style="display:flex; gap:.6rem; margin-top:.9rem;">
+          <button id="submit" class="btn primary">Gửi lịch rảnh tuần này</button>
+          <button id="clear" class="btn ghost">Xoá chọn</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:1rem;">
+      <div class="card-body">
+        <div class="h2">Lịch đã đăng ký (hiển thị tên)</div>
+        <div id="list" style="margin-top:.6rem;"></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/ui.js"></script>
+  <script src="/script.js"></script>
+</body>
+</html>
