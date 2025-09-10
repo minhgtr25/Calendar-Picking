@@ -35,24 +35,57 @@ function toggleCell(cell,mode){ const date=cell.dataset.date, time=cell.dataset.
 function clearSelection(){ weekDays.forEach(d=>{selected[d]=new Set();}); renderCalendar(); }
 document.addEventListener('mouseup',()=>{selecting=false;selectMode=null;});
 
-async function submitWeek(){
-  const name=$('#name').value.trim();
-  if(!name){ window.notify?.warn('Vui lòng nhập Họ tên.'); return; }
-  const days=weekDays.map(d=>({date:d,slots:Array.from(selected[d]||[])})).filter(d=>d.slots.length);
-  if(!days.length){ window.notify?.warn('Hãy chọn ít nhất 1 ô thời gian rảnh trong tuần.'); return; }
-  try{
-    let res=await fetch('/api/availabilities/bulk',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,days})});
-    if(!res.ok){
-      if(res.status===404){
-        for(const d of days){
-          const r=await fetch('/api/availabilities',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,date:d.date,slots:d.slots})});
-          if(!r.ok){ const err=await r.json().catch(()=>({})); throw new Error(err.error||r.statusText); }
+async function submitWeek() {
+  const name = $('#name').value.trim();
+  if (!name) { window.notify?.warn('Vui lòng nhập Họ tên.'); return; }
+
+  const days = weekDays
+    .map(d => ({ date: d, slots: Array.from(selected[d] || []) }))
+    .filter(d => d.slots.length);
+
+  if (!days.length) {
+    window.notify?.warn('Hãy chọn ít nhất 1 ô thời gian rảnh trong tuần.');
+    return;
+  }
+
+  try {
+    // 1) Thử bulk trước
+    let res = await fetch('/api/availabilities/bulk', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, days })
+    });
+
+    // 2) Nếu bulk thất bại -> fallback gửi từng ngày
+    if (!res.ok) {
+      // cố gắng đọc thông báo lỗi để log (không chặn fallback)
+      try {
+        const err = await res.json();
+        console.warn('Bulk failed:', err);
+      } catch {}
+
+      for (const d of days) {
+        const r = await fetch('/api/availabilities', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, date: d.date, slots: d.slots })
+        });
+        if (!r.ok) {
+          const err = await r.json().catch(() => ({}));
+          throw new Error(err.error || r.statusText || 'Gửi từng ngày thất bại');
         }
-      }else{ const err=await res.json().catch(()=>({})); throw new Error(err.error||res.statusText); }
+      }
     }
-    window.notify?.success('Đã ghi nhận lịch rảnh cho tuần!'); clearSelection(); loadPublicList();
-  }catch(e){ window.notify?.error(e.message||'Không thể gửi lịch.'); }
+
+    window.notify?.success('Đã ghi nhận lịch rảnh cho tuần!');
+    clearSelection();
+    loadPublicList();
+
+  } catch (e) {
+    window.notify?.error(e.message || 'Không thể gửi lịch.');
+  }
 }
+
 
 async function loadPublicList(){
   try{
